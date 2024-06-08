@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Pathfinding : MonoBehaviour {
@@ -43,7 +42,6 @@ public class Pathfinding : MonoBehaviour {
                     // sw.Stop();
                     // print("Path found: " + sw.ElapsedMilliseconds + "ms");
                     pathSuccess = true;
-                    // RetracePath(startNode, targetNode);
                     break;
                 }
 
@@ -73,15 +71,20 @@ public class Pathfinding : MonoBehaviour {
     }
 
     Vector3[] RetracePath(Node startNode, Node endNode){
-        List<Node> path = new();
+        List<Node> path = new List<Node>();
         Node currentNode = endNode;
-        
+
         while (currentNode != startNode) {
             path.Add(currentNode);
             currentNode = currentNode.parent;
         }
-        Vector3[] waypoints = SimplifyPath(path);
-        Array.Reverse(waypoints);
+        path.Reverse();
+
+        Vector3[] waypoints = new Vector3[path.Count];
+        for (int i = 0; i < path.Count; i++) {
+            waypoints[i] = path[i].worldPosition;
+        }
+
         return waypoints;
     }
     
