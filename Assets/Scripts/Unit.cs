@@ -4,20 +4,43 @@ using UnityEngine;
 public class Unit : MonoBehaviour {
     public GameObject target;
     public float speed = 5;
+    public float HP;
+    private float currentHP;
     Vector3[] path;
     int targetIndex;
     Vector3 startPos;
     public bool showPathGizmos;
 
+    [SerializeField] HealthBar healthBar;
+
+    void Start(){
+        healthBar = GetComponentInChildren<HealthBar>();
+        if (healthBar == null) {
+            Debug.LogError("HealthBar component not found in children of the unit prefab!");
+        }
+    }
+
     void Awake() {
+        // healthBar = GetComponent<HealthBar>();
+        currentHP = HP;
+        healthBar.UpdateHealthBar(currentHP, HP);
         startPos = transform.position;
         RequestNewPath();
     }
 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.R)) {
-            StopAndReset();
+        // if (Input.GetKeyDown(KeyCode.R)) {
+        //     StopAndReset();
+        // }
+        if (currentHP <= 0){
+            Destroy(gameObject);
         }
+    }
+
+    public void TakeDamage(float amount){
+        currentHP -= amount;
+        healthBar.UpdateHealthBar(currentHP, HP);
+        // Debug.Log("remaining HP" + currentHP);
     }
 
     void RequestNewPath() {
@@ -50,8 +73,16 @@ public class Unit : MonoBehaviour {
 
         Vector3 currentWaypoint = path[0];
 
+
         while (true) {
-            if (transform.position == currentWaypoint) {
+            // Only move in the x and z axes, keeping the y-coordinate constant
+            Vector3 targetPosition = new Vector3(currentWaypoint.x, transform.position.y, currentWaypoint.z);
+            
+            Vector3 direction = (targetPosition - transform.position).normalized;
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * speed);
+
+            if (transform.position == targetPosition) {
                 targetIndex++;
                 if (targetIndex >= path.Length) {
                     Destroy(gameObject);
@@ -59,12 +90,19 @@ public class Unit : MonoBehaviour {
                 }
                 currentWaypoint = path[targetIndex];
             }
-            transform.position = Vector3.MoveTowards(transform.position, currentWaypoint, speed * Time.deltaTime);
+
+            // Move towards the targetPosition
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
             yield return null;
         }
     }
 
+
     public void OnDrawGizmos() {
+        // Gizmos.color = Color.red;
+        // Vector3 healthBarLenght = transform.position;
+        // healthBarLenght.x += currentHP/100;
+        // Gizmos.DrawLine(transform.position, healthBarLenght);
         if (path != null && showPathGizmos) {
             Gizmos.color = new Color(0.75f, 0.75f, 0.75f, 0.3f); // Light transparent gray
 

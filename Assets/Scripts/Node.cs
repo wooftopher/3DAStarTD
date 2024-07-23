@@ -11,6 +11,8 @@ public class Node : IHeapItem<Node> {
     public Node parent;
     int heapIndex;
     public GameObject wallObject;
+    public GameObject towerObject;
+
 
 
     public Node(bool _walkable, bool _buildable, Vector3 _worldPosition, int _gridX, int _gridY){
@@ -19,6 +21,9 @@ public class Node : IHeapItem<Node> {
         gridX = _gridX;
         gridY = _gridY;
         buildable = _buildable;
+        wallObject = null;
+        towerObject = null;
+
     }
     public int FCost {
         get {

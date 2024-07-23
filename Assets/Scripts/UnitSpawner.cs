@@ -23,7 +23,14 @@ public class UnitSpawner : MonoBehaviour {
     }
 
     void SpawnUnit() {
-        GameObject newUnit = Instantiate(UnitPrefab, transform.position, Quaternion.identity);
+        // Calculate the spawn position relative to the adjusted position in the editor
+        Vector3 spawnPosition = transform.position;  // Start with the spawner's position
+        
+        // Optionally adjust the spawn position if needed
+        // Example: Offset by 0.5 units in the y-axis
+        spawnPosition += new Vector3(0, 0.25f, 0);  // Adjust as needed
+        
+        GameObject newUnit = Instantiate(UnitPrefab, spawnPosition, Quaternion.identity);
         
         // Set the showPathGizmos variable of the spawned unit
         Unit unitComponent = newUnit.GetComponent<Unit>();

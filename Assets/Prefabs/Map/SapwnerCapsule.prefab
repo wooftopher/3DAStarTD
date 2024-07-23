@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5690629485621068021
+--- !u!1 &4041653705638414131
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,62 +8,96 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4995959816202553536}
-  - component: {fileID: 3167521221124615975}
-  - component: {fileID: 6857563065687818603}
-  - component: {fileID: 8792027721548602129}
-  - component: {fileID: 7368684331739509985}
+  - component: {fileID: 577558012161524208}
+  - component: {fileID: 3944286367768962038}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: UnitSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4995959816202553536
+--- !u!4 &577558012161524208
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5690629485621068021}
+  m_GameObject: {fileID: 4041653705638414131}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -37.9, y: 0, z: -43.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.9000034, y: 0, z: 2.5999975}
+  m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 4572472358127125320}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3167521221124615975
+--- !u!114 &3944286367768962038
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5690629485621068021}
+  m_GameObject: {fileID: 4041653705638414131}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 305cbba731a4876479eb6a91a6f50b73, type: 3}
+  m_Script: {fileID: 11500000, guid: 74a72f2cd9d6a5340b72a29162435ad9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  speed: 5
---- !u!33 &6857563065687818603
+  UnitPrefab: {fileID: 8968982248239169202, guid: fc688227587967d4e8ebcd4c3aa08f93, type: 3}
+  spawnInterval: 1
+  maxEnemies: 3
+  showPathGizmos: 1
+--- !u!1 &4450070284862147842
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4572472358127125320}
+  - component: {fileID: 584777928095793841}
+  - component: {fileID: 9094525734202691061}
+  - component: {fileID: 1105169740241368916}
+  m_Layer: 7
+  m_Name: SapwnerCapsule
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4572472358127125320
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4450070284862147842}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.78, y: 0, z: -4.74}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 577558012161524208}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &584777928095793841
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5690629485621068021}
+  m_GameObject: {fileID: 4450070284862147842}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &8792027721548602129
+--- !u!23 &9094525734202691061
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5690629485621068021}
+  m_GameObject: {fileID: 4450070284862147842}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -99,13 +133,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &7368684331739509985
+--- !u!136 &1105169740241368916
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5690629485621068021}
+  m_GameObject: {fileID: 4450070284862147842}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
