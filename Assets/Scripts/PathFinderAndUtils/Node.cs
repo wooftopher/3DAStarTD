@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Node : IHeapItem<Node> {
     public bool walkable;
-    public bool buildable;
+    public bool isBuildable;
     public Vector3 worldPosition;
     public int gCost;
     public int hCost;
@@ -20,10 +20,9 @@ public class Node : IHeapItem<Node> {
         worldPosition = _worldPosition;
         gridX = _gridX;
         gridY = _gridY;
-        buildable = _buildable;
+        isBuildable = _buildable;
         wallObject = null;
         towerObject = null;
-
     }
     public int FCost {
         get {

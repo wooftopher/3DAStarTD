@@ -229,8 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 6110567353736337043}
-  mycamera: {fileID: 2518341171950214799, guid: 38ab0a944238e8a488103154974d2120, type: 3}
-  target: {fileID: 0}
+  myCamera: {fileID: 2518341171950214799, guid: 38ab0a944238e8a488103154974d2120, type: 3}
 --- !u!114 &6110567353736337043
 MonoBehaviour:
   m_ObjectHideFlags: 0

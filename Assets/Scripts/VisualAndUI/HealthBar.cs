@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour {
     [SerializeField] private Slider slider;
-    [SerializeField] private Camera mycamera;
+    [SerializeField] private Camera myCamera;
     // [SerializeField] private Transform target;
     // [SerializeField] private Vector3 offset;
 
@@ -13,7 +13,9 @@ public class HealthBar : MonoBehaviour {
     }
 
     void Update(){
-        transform.rotation = mycamera.transform.rotation;
+        // transform.rotation = myCamera.transform.rotation;
+        transform.LookAt(transform.position + myCamera.transform.rotation * Vector3.forward,
+                         myCamera.transform.rotation * Vector3.up);
         // transform.position = target.position + offset;
     }
 }

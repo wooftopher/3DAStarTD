@@ -23,6 +23,12 @@ public class Grid : MonoBehaviour {
     Node unitNode;
     Node goalNode;
 
+    private NodeSelectionVisualizer visualizer;
+
+    void Start() {
+        visualizer = GetComponent<NodeSelectionVisualizer>();
+    }
+
     void Awake() {
         // Ensure only one instance of the Grid exists
         if (Instance != null && Instance != this) {
@@ -50,8 +56,8 @@ public class Grid : MonoBehaviour {
             for (int y = 0; y < gridSizeY; y++){
                 Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
                 bool walkable = !Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask);
-                bool buildable = !Physics.CheckSphere(worldPoint, nodeRadius, unbuildableMask);
-                grid[x,y] = new Node(walkable, buildable, worldPoint, x, y);
+                bool isBuildable = !Physics.CheckSphere(worldPoint, nodeRadius, unbuildableMask);
+                grid[x,y] = new Node(walkable, isBuildable, worldPoint, x, y);
             }
         }
     }
@@ -91,20 +97,30 @@ public class Grid : MonoBehaviour {
         return grid[x,y];
     }
     void Update() {
-        if (displayNodeUnderMouse) {
-            Vector3 mouseWorldPosition = GetMouseWorldPosition();
-            nodeUnderMouse = NodeFromWorldPoint(mouseWorldPosition);
-        }
-        if (unit != null) {
-            unitNode = NodeFromWorldPoint(unit.position);
-        }
+        // if (displayNodeUnderMouse) {
+        //     Vector3 mouseWorldPosition = GetMouseWorldPosition();
+        //     nodeUnderMouse = NodeFromWorldPoint(mouseWorldPosition);
+        //     if (visualizer != null) {
+        //         visualizer.nodeUnderMouse = nodeUnderMouse;
+        //     }
+        // }
+        // if (unit != null) {
+        //     unitNode = NodeFromWorldPoint(unit.position);
+        // }
         if (goal != null)
             goalNode = NodeFromWorldPoint(goal.position);
     }
+
     public Vector3 GetMouseWorldPosition() {
-        Vector3 mouseScreenPosition = Input.mousePosition;
-        mouseScreenPosition.z = 0; // Set a reasonable z-coordinate based on the camera position
-        return Camera.main.ScreenToWorldPoint(mouseScreenPosition);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Plane plane = new Plane(Vector3.up, transform.position);
+
+        float distance;
+        if (plane.Raycast(ray, out distance)) {
+            return ray.GetPoint(distance);
+        }
+
+        return Vector3.zero;
     }
 
 
@@ -120,9 +136,9 @@ public class Grid : MonoBehaviour {
 
         if (grid != null) {
             foreach (Node n in grid) {
-                if (!n.buildable) {
+                if (!n.isBuildable) {
                     Gizmos.color = Color.yellow;
-                    Gizmos.DrawCube(new Vector3(n.worldPosition.x, transform.position.y + 0.05f, n.worldPosition.z), Vector3.one * (nodeDiameter - 0.1f)); // Draw non-buildable cubes
+                    Gizmos.DrawCube(new Vector3(n.worldPosition.x, transform.position.y + 0.05f, n.worldPosition.z), Vector3.one * (nodeDiameter - 0.1f)); // Draw non-isBuildable cubes
                 }
                 if (displayGridGizmos && !n.walkable) {
                     Gizmos.color = Color.red;
