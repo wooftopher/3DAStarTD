@@ -85,30 +85,20 @@ public class Grid : MonoBehaviour {
     }
 
 
-    public Node NodeFromWorldPoint(Vector3 wolrdPosition){
-        float percentX = (wolrdPosition.x + gridWorldSize.x/2) / gridWorldSize.x;
-        float percentY = (wolrdPosition.z + gridWorldSize.y/2) / gridWorldSize.y;
+    public Node NodeFromWorldPoint(Vector3 worldPosition) {
+        float percentX = (worldPosition.x + gridWorldSize.x / 2) / gridWorldSize.x;
+        float percentY = (worldPosition.z + gridWorldSize.y / 2) / gridWorldSize.y;
 
-        percentX = Mathf.Clamp01(percentX);
-        percentY = Mathf.Clamp01(percentY);
+        int x = Mathf.FloorToInt((gridSizeX) * percentX);
+        int y = Mathf.FloorToInt((gridSizeY) * percentY);
 
-        int x = Mathf.RoundToInt((gridSizeX-1) * percentX);
-        int y = Mathf.RoundToInt((gridSizeY-1) * percentY);
-        return grid[x,y];
-    }
-    void Update() {
-        // if (displayNodeUnderMouse) {
-        //     Vector3 mouseWorldPosition = GetMouseWorldPosition();
-        //     nodeUnderMouse = NodeFromWorldPoint(mouseWorldPosition);
-        //     if (visualizer != null) {
-        //         visualizer.nodeUnderMouse = nodeUnderMouse;
-        //     }
-        // }
-        // if (unit != null) {
-        //     unitNode = NodeFromWorldPoint(unit.position);
-        // }
-        if (goal != null)
-            goalNode = NodeFromWorldPoint(goal.position);
+        // Check if the calculated indices are within the grid bounds
+        if (x >= 0 && x < gridSizeX && y >= 0 && y < gridSizeY) {
+            return grid[x, y];
+        } else {
+            // Optional: Return null or a specific "invalid" node when out of bounds
+            return null;
+        }
     }
 
     public Vector3 GetMouseWorldPosition() {
@@ -123,6 +113,10 @@ public class Grid : MonoBehaviour {
         return Vector3.zero;
     }
 
+    void Update() {
+        if (goal != null)
+            goalNode = NodeFromWorldPoint(goal.position);
+    }
 
 
     public List<Node> path;

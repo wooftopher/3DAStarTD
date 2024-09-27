@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class NodeSelectionVisualizer : MonoBehaviour {
     public GameObject nodeVisualPrefab; // Assign your cube prefab in the inspector
+    public GameObject towerVisualPrefab;
+    private GameObject currentTowerVisual;
     private GameObject currentNodeVisual;
     private Renderer nodeVisualRenderer;
+    private Renderer towerVisualRenderer;
 
     [HideInInspector]
     public Node nodeUnderMouse; // This will be updated by NodeSelector
@@ -16,6 +19,10 @@ public class NodeSelectionVisualizer : MonoBehaviour {
 
         // Get the renderer component for changing the color
         nodeVisualRenderer = currentNodeVisual.GetComponent<Renderer>();
+
+        currentTowerVisual = Instantiate(towerVisualPrefab);
+        currentTowerVisual.SetActive(false);
+        towerVisualRenderer = currentTowerVisual.GetComponent<Renderer>();
     }
 
     public void ShowNodeVisual(Node node){
@@ -43,5 +50,18 @@ public class NodeSelectionVisualizer : MonoBehaviour {
         if (currentNodeVisual != null) {
             currentNodeVisual.SetActive(false); // Hide the visual indicator
         }
+    }
+
+    public void ShowTowerVisual(Wall wall) {
+        if (wall != null) {
+            Vector3 position = wall.transform.position;
+            position.y += wall.GetComponent<Renderer>().bounds.size.y; // Adjust the y position to place it on top of the wall
+            currentTowerVisual.transform.position = position;
+            currentTowerVisual.SetActive(true);
+        }
+    }
+
+    public void HideTowerVisual() {
+        currentTowerVisual.SetActive(false);
     }
 }

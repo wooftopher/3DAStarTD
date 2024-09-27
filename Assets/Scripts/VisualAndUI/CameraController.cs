@@ -10,6 +10,11 @@ public class CameraController : MonoBehaviour {
     private float currentAngle = -45f; // Start angle for pitch
     private float currentRotation = 0f; // Start angle for rotation around the target
 
+    void Start() {
+        // Adjust camera's viewport rect to shift the scene upwards and leave space at the bottom
+        GetComponent<Camera>().rect = new Rect(0, 0.15f, 1, 0.85f); // Leaves 15% of the screen at the bottom
+    }
+
     void Update() {
         // Get input from the up and down arrow keys
         float verticalInput = Input.GetAxis("Vertical");
@@ -23,7 +28,7 @@ public class CameraController : MonoBehaviour {
         // Calculate the new position and rotation
         Quaternion pitchRotation = Quaternion.Euler(currentAngle, 0, 0);
         Quaternion yawRotation = Quaternion.Euler(0, currentRotation, 0);
-        Vector3 direction = new Vector3(0, 0, -10f); // Distance from the target
+        Vector3 direction = new Vector3(0, 0, -12f); // Distance from the target
 
         transform.position = target.position - yawRotation * pitchRotation * direction;
         transform.LookAt(target); // Always look at the target
