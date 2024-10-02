@@ -8,9 +8,18 @@ public class WallPlacement : MonoBehaviour {
     public Button sellButtonTower;
     public Button sellButtonWall;
 
+    public Button rangeTowerButton;
+    public Button meleeTowerButton;
+    public Button netTowerButton;
+
+
+
     private NodeSelectionVisualizer Nodevisualizer;
     public GameObject wallPrefab;
-    public GameObject towerPrefab;
+    public GameObject towerPrefabMelee;
+    public GameObject towerPrefabRange;
+    public GameObject towerPrefabNet;
+
     public Transform spawner;
     public Transform goal;
     private InfoUI infoUI;
@@ -36,6 +45,11 @@ public class WallPlacement : MonoBehaviour {
         player = FindObjectOfType<Player>();
         sellButtonTower.onClick.AddListener(OnSellButtonTowerPressed);
         sellButtonWall.onClick.AddListener(OnSellButtonWallPressed);
+        rangeTowerButton.onClick.AddListener(OnRangeTowerButtonPressed);
+        meleeTowerButton.onClick.AddListener(OnMeleeTowerButtonPressed);
+        netTowerButton.onClick.AddListener(OnNetTowerButtonPressed);
+
+
     }
     private void OnSellButtonTowerPressed() {
         if(selectedTower)
@@ -46,18 +60,41 @@ public class WallPlacement : MonoBehaviour {
             isSellButtonWallPressed = true; // Mark the sell button as pressed
     }
 
+    private void OnRangeTowerButtonPressed() {
+        if (selectedWall != null && selectedWall.towerObject == null) {
+            // Place the tower on the selected wall
+            PlaceTowerOnWall(selectedWall, 1);
+        } else {
+            Debug.LogWarning("No wall selected or tower already exists on the wall!");
+        }
+    }
+
+    private void OnMeleeTowerButtonPressed() {
+        if (selectedWall != null && selectedWall.towerObject == null) {
+            // Place the tower on the selected wall
+            PlaceTowerOnWall(selectedWall, 2);
+        } else {
+            Debug.LogWarning("No wall selected or tower already exists on the wall!");
+        }
+    }
+
+    private void OnNetTowerButtonPressed() {
+        if (selectedWall != null && selectedWall.towerObject == null) {
+            // Place the tower on the selected wall
+            PlaceTowerOnWall(selectedWall, 3);
+        } else {
+            Debug.LogWarning("No wall selected or tower already exists on the wall!");
+        }
+    }
+
+
     public void SetBuildMode(int mode) {
         currentBuildMode = mode;
         // Add logic here to handle different build modes based on currentBuildMode
     }
     void Update() {
-        if (selectedTower)
-            infoUI.ShowTowerPanel();
-        else if (selectedWall)
-            infoUI.ShowWallPanel();
-        else
-            infoUI.ShowEmptyPanel();
         if (currentBuildMode != 1) {
+            infoUI.ShowEmptyPanel();
             ResetWallColor(lastHoveredWall);
             ResetWallColor(selectedWall);
             selectedWall = null;
@@ -67,11 +104,8 @@ public class WallPlacement : MonoBehaviour {
             selectedTower = null;
             lasthoveredTower = null;
         }
-        if (currentBuildMode != 2)
+        if (currentBuildMode != 2){}
             Nodevisualizer.HideVisualizer();
-        if (currentBuildMode != 3)
-            Nodevisualizer.HideTowerVisual();
-
         if (currentBuildMode == 1) {
             BaseTower towerUnderMouse = GetTowerUnderMouse();
             if (towerUnderMouse) {
@@ -129,25 +163,7 @@ public class WallPlacement : MonoBehaviour {
                 Nodevisualizer.HideVisualizer();
             }
         }
-        else if (currentBuildMode == 3) {
-            Wall wallUnderMouse = GetWallUnderMouse();
-            if (wallUnderMouse) {
-                // Check if a tower is already placed on the wall
-                if (!wallUnderMouse.towerObject) { // Assuming Wall has a method HasTower
-                    Nodevisualizer.ShowTowerVisual(wallUnderMouse);
-                    if (Input.GetMouseButtonDown(0)) { // Left mouse button
-                        PlaceTowerOnWall(wallUnderMouse);
-                    }
-                } else {
-                    Nodevisualizer.HideTowerVisual(); // Hide if a tower is already present
-                }
-            } else {
-                Nodevisualizer.HideTowerVisual();
-            }
-        }
-        // else if (currentBuildMode == 4) {
-        //     HandleRemoveMode();
-        // }
+
     }
     
     // Function to highlight the wall when hovered
@@ -201,6 +217,7 @@ public class WallPlacement : MonoBehaviour {
         } else {
             Debug.LogError("Renderer not found on the selected wall!");
         }
+        infoUI.ShowWallPanel();
     }
 
     void ResetWallColor(Wall wall) {
@@ -259,6 +276,7 @@ public class WallPlacement : MonoBehaviour {
             return;
         }
 
+        infoUI.ShowTowerPanel();
         infoUI.UpdateTowerInfo(selectedTower);
 
         // Change the color of the selected tower to a moderate light greenish tint
@@ -286,6 +304,7 @@ public class WallPlacement : MonoBehaviour {
         player.EarnGold(selectedTower.Price); // Give gold back to player
         Destroy(selectedTower.gameObject); // Destroy the tower
         selectedTower = null; // Clear the selected tower
+        infoUI.ShowEmptyPanel();
         // infoUI.UpdateTowerInfo(null); // Update UI to clear tower info
     }
     private void SellWall() {
@@ -296,7 +315,7 @@ public class WallPlacement : MonoBehaviour {
         selectedWall.node.isBuildable = true;
         Destroy(selectedWall.gameObject); // Destroy the tower
         selectedWall = null; // Clear the selected tower
-
+        infoUI.ShowEmptyPanel();
         // infoUI.UpdateTowerInfo(null); // Update UI to clear tower info
     }
 
@@ -313,46 +332,6 @@ public class WallPlacement : MonoBehaviour {
 
         return null;
     }
-
-    // void HandleRemoveMode(){
-    //     Wall wallUnderMouse = GetWallUnderMouse();
-        
-    //     // If hovering over a wall
-    //     if (wallUnderMouse) {
-    //         // Change color only if it's different from the last hovered wall
-    //         if (lastHoveredWall != wallUnderMouse) {
-    //             // Restore the color of the previously hovered wall
-    //             if (lastHoveredWall != null) {
-    //                 RestoreWallColor(lastHoveredWall);
-    //             }
-
-    //             // Store the current wall as the last hovered
-    //             lastHoveredWall = wallUnderMouse;
-
-    //             // Get the renderer and store the original color
-    //             Renderer wallRenderer = wallUnderMouse.GetComponent<Renderer>();
-    //             if (wallRenderer != null) {
-    //                 // Store the original color
-    //                 originalColorWall = wallRenderer.material.color;
-
-    //                 // Set the color to reddish
-    //                 wallRenderer.material.color = Color.red; // Change this to your desired color
-    //             }
-    //         }
-    //     } 
-    //     else {
-    //         // Restore the color if not hovering over a wall
-    //         if (lastHoveredWall != null) {
-    //             RestoreWallColor(lastHoveredWall);
-    //             lastHoveredWall = null; // Clear the last hovered wall
-    //         }
-    //     }
-
-    //     // If left-clicking, remove the wall
-    //     if (Input.GetMouseButtonDown(0) && wallUnderMouse) {
-    //         RemoveWallAtNode(Grid.Instance.NodeFromWorldPoint(wallUnderMouse.transform.position));
-    //     }
-    // }
 
     Wall GetWallUnderMouse() {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -371,29 +350,60 @@ public class WallPlacement : MonoBehaviour {
         return null;
     }
 
-    void PlaceTowerOnWall(Wall wall) {
+    void PlaceTowerOnWall(Wall wall, int towerType) {
         if (wall == null) {
             Debug.LogError("Wall is null! Cannot place tower.");
             return;
         }
 
-        // Check if the player can build the tower (enough gold)
-        int towerCost = 50; // Replace with your tower cost value whyyyyyyyyyyyyyyyyyy???????????
-        // for now just one tower but must be changed
-        if (player.CanBuildTower(towerCost)) {
-            // Place tower on top of the existing wall
-            Vector3 additionalObjectPosition = wall.transform.position;
-            additionalObjectPosition.y += wallPrefab.GetComponent<Renderer>().bounds.size.y; // Adjust the y position to place it on top of the wall
-            
-            GameObject towerObject = Instantiate(towerPrefab, additionalObjectPosition, Quaternion.identity);
-            wall.towerObject = towerObject;
+        GameObject towerPrefab = null;
 
-            // Deduct the tower cost from the player's gold
-            player.SpendGold(towerCost);
+        // Check the tower type and assign the correct prefab
+        if (towerType == 1) {
+            towerPrefab = towerPrefabRange;
+        } else if (towerType == 2) {
+            towerPrefab = towerPrefabMelee;
+        } else if (towerType == 3) {
+            towerPrefab = towerPrefabNet; 
         } else {
-            Debug.LogWarning("Not enough gold to place the tower!");
+            Debug.LogError("Invalid tower type! Cannot place tower.");
+            return; // Exit the method if an invalid tower type is provided
+        }
+
+        // Instantiate the tower on top of the existing wall
+        Vector3 additionalObjectPosition = wall.transform.position;
+        additionalObjectPosition.y += wallPrefab.GetComponent<Renderer>().bounds.size.y; // Adjust the y position to place it on top of the wall
+
+        GameObject towerObject = Instantiate(towerPrefab, additionalObjectPosition, Quaternion.identity);
+        wall.towerObject = towerObject;
+
+        // Access the BaseTower component to get its information
+        BaseTower baseTower = towerObject.GetComponent<BaseTower>();
+        if (baseTower != null) {
+            // Access the tower cost from the BaseTower component
+            int towerCost = baseTower.Price;
+
+            // Check if the player can afford the tower
+            if (player.CanBuildTower(towerCost)) {
+                // Log tower details
+                Debug.Log($"Tower placed: {baseTower.TowerName}, Damage: {baseTower.Damage}, Range: {baseTower.Range}, Cost: {towerCost}");
+
+                // Deduct the tower cost from the player's gold
+                player.SpendGold(towerCost);
+
+                // Select the tower
+                SelectTower(baseTower);
+            } else {
+                Debug.LogWarning("Not enough gold to place the tower!");
+                Destroy(towerObject); // Destroy the tower if the player can't afford it
+            }
+        } else {
+            Debug.LogError("BaseTower component not found on the instantiated tower!");
         }
     }
+
+
+
 
 
     void PlaceWallAtNode(Node node) {
@@ -426,7 +436,6 @@ public class WallPlacement : MonoBehaviour {
                 } else {
                     Debug.LogError("Wall component missing on instantiated wall!");
                 }
-
                 // Update node properties
                 node.walkable = false;  // Mark the node as non-walkable
 
@@ -452,33 +461,33 @@ public class WallPlacement : MonoBehaviour {
 
 
 
-    void RemoveWallAtNode(Node node) {
-        if (node == null) {
-            Debug.LogError("Node is null!");
-            return;
-        }
+//     void RemoveWallAtNode(Node node) {
+//         if (node == null) {
+//             Debug.LogError("Node is null!");
+//             return;
+//         }
         
-        if (!node.walkable) {
-            // Check if the wall exists
-            if (node.wallObject != null) {
-                // Get the Wall component to access the tower
-                Wall wall = node.wallObject.GetComponent<Wall>();
+//         if (!node.walkable) {
+//             // Check if the wall exists
+//             if (node.wallObject != null) {
+//                 // Get the Wall component to access the tower
+//                 Wall wall = node.wallObject.GetComponent<Wall>();
 
-                // Check if the tower exists and destroy it
-                if (wall.towerObject != null) {
-                    Destroy(wall.towerObject);
-                    Debug.Log("Tower removed.");
-                }
+//                 // Check if the tower exists and destroy it
+//                 if (wall.towerObject != null) {
+//                     Destroy(wall.towerObject);
+//                     Debug.Log("Tower removed.");
+//                 }
 
-                // Destroy the wall object
-                Destroy(node.wallObject);
-                node.wallObject = null; // Clear the reference to the wall object
-                player.EarnIceBlock(1);
-            }
+//                 // Destroy the wall object
+//                 Destroy(node.wallObject);
+//                 node.wallObject = null; // Clear the reference to the wall object
+//                 player.EarnIceBlock(1);
+//             }
             
-            node.walkable = true; // Set the node to walkable
-        } else {
-            Debug.Log("Node is not walkable.");
-        }
-    }
+//             node.walkable = true; // Set the node to walkable
+//         } else {
+//             Debug.Log("Node is not walkable.");
+//         }
+//     }
 }

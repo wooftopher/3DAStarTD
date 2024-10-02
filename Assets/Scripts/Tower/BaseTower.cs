@@ -8,7 +8,7 @@ public class BaseTower : MonoBehaviour {
     protected float range;                                   // Range to detect enemy units
     protected float damage;                                  // Damage dealt by the tower
     protected int price;                                   // Price of the tower
-    private Transform firePoint;                             // Point where the missile spawns
+    protected Transform firePoint;                             // Point where the missile spawns
     protected Transform currentTarget;                       // Current enemy target
     private float shootTimer;                                // Timer to track shooting cooldown
     public Color originalColor;
@@ -19,7 +19,7 @@ public class BaseTower : MonoBehaviour {
     public float ShootCooldown => shootCooldown;            // Getter for shoot cooldown
     public int Price => price;                             // Getter for tower price
 
-    protected virtual void Start() {
+    protected virtual void Awake() {
         firePoint = transform;                               // Set firePoint to be at the center of the tower's position
         shootTimer = shootCooldown;                          // Start with full cooldown time
 

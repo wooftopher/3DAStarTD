@@ -20,9 +20,9 @@ public class NodeSelectionVisualizer : MonoBehaviour {
         // Get the renderer component for changing the color
         nodeVisualRenderer = currentNodeVisual.GetComponent<Renderer>();
 
-        currentTowerVisual = Instantiate(towerVisualPrefab);
-        currentTowerVisual.SetActive(false);
-        towerVisualRenderer = currentTowerVisual.GetComponent<Renderer>();
+        // currentTowerVisual = Instantiate(towerVisualPrefab);
+        // currentTowerVisual.SetActive(false);
+        // towerVisualRenderer = currentTowerVisual.GetComponent<Renderer>();
     }
 
     public void ShowNodeVisual(Node node){

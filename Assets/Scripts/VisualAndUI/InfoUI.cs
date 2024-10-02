@@ -61,13 +61,13 @@ public class InfoUI : MonoBehaviour {
     }
 
     public void ShowEmptyPanel() {
-        towerPanel.SetActive(false);
         emptyPanel.SetActive(true);
+        towerPanel.SetActive(false);
         wallPanel.SetActive(false);
     }
     public void ShowWallPanel() {
+        wallPanel.SetActive(true);
         towerPanel.SetActive(false);
         emptyPanel.SetActive(false);
-        wallPanel.SetActive(true);
     }
 }
