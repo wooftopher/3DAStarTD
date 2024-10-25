@@ -283,7 +283,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gold: 1000
   lives: 10
-  iceBlocks: 100
+  iceBlocks: 10
 --- !u!4 &226531873 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7229419164839542324, guid: add27119f73c83246b2698aceb34dd3a, type: 3}
@@ -1528,6 +1528,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1250534309 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4450070284862147842, guid: c54d7357ed2a8be4f8e575de60fd3d81, type: 3}
+  m_PrefabInstance: {fileID: 6844193841993498282}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1383480998
 GameObject:
   m_ObjectHideFlags: 0
@@ -1612,6 +1617,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4572472358127125320, guid: c54d7357ed2a8be4f8e575de60fd3d81, type: 3}
   m_PrefabInstance: {fileID: 6844193841993498282}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1499926028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1250534309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8809e9dce4249b44a3a7401c5b09b4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyData: {fileID: 11400000, guid: 1a337112af93b4e4fb7e33f34564c35d, type: 2}
+  enemiesPerWave: 5
+  timeBetweenEnemies: 0.5
+  player: {fileID: 72902638}
 --- !u!1 &1505672643
 GameObject:
   m_ObjectHideFlags: 0
@@ -3067,7 +3088,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4572472358127125320, guid: c54d7357ed2a8be4f8e575de60fd3d81, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4572472358127125320, guid: c54d7357ed2a8be4f8e575de60fd3d81, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3102,9 +3123,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4041653705638414131, guid: c54d7357ed2a8be4f8e575de60fd3d81, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4450070284862147842, guid: c54d7357ed2a8be4f8e575de60fd3d81, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 1499926028}
   m_SourcePrefab: {fileID: 100100000, guid: c54d7357ed2a8be4f8e575de60fd3d81, type: 3}
 --- !u!1001 &7619580856087282114
 PrefabInstance:

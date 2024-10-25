@@ -1,12 +1,17 @@
+using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;  // Add this line to use List
 using UnityEngine;
 
 public class Unit : MonoBehaviour {
     public GameObject target;
-    public float speed = 5;
+    public float speed;
+    public int goldOnDeath;
     public float HP;
     private float currentHP;
+    public EnemyData enemyData;
+
+    //AutoPathing
     Vector3[] path;
     int targetIndex;
     Vector3 startPos;
@@ -14,25 +19,50 @@ public class Unit : MonoBehaviour {
     
     private List<Coroutine> activeStuns = new List<Coroutine>(); // To track active stuns
     [SerializeField] HealthBar healthBar;
+    public UnityEvent<int> onDeath;
+    public UnityEvent onReachedGoal;
 
     void Start(){
-        healthBar = GetComponentInChildren<HealthBar>();
-        if (healthBar == null) {
-            Debug.LogError("HealthBar component not found in children of the unit prefab!");
-        }
+        // if (onDeath == null) {
+        //     onDeath = new UnityEvent<int>();
+        // }
     }
 
     void Awake() {
-        currentHP = HP;
-        healthBar.UpdateHealthBar(currentHP, HP);
         startPos = transform.position;
         RequestNewPath();
     }
 
+    public void Initialize(EnemyData data, int level) {
+        enemyData = data;  // Set the enemy data
+        ScaleStats(level); // Call ScaleStats with the wave level
+        currentHP = HP;    // Reset HP based on the scaled HP value
+        healthBar = GetComponentInChildren<HealthBar>();
+        if (healthBar == null) {
+            Debug.LogError("HealthBar component not found in children of the unit prefab!");
+        }
+        healthBar.UpdateHealthBar(currentHP, HP); // Update health bar
+
+        // Debug.Log($"Initialized unit with level {level}: HP = {HP}, Speed = {speed}, currentHP = {currentHP}");
+    }
+
+    private void ScaleStats(int level) {
+        HP = enemyData.baseHealth + level * 5;   // Example scaling: health increases per level
+        speed = enemyData.baseSpeed + level * 0.5f;  // Example scaling: speed increases per level
+
+        // Debug.Log($"Scaled stats for level {level}: HP = {HP}, Speed = {speed}");
+    }
+
+
     void Update() {
         if (currentHP <= 0){
-            Destroy(gameObject);
+            Die();
         }
+    }
+    private void Die() {
+        Debug.Log($"{gameObject.name} has died.");
+        onDeath.Invoke(enemyData.goldOnDeath); // Invoke event with gold amount
+        Destroy(gameObject);
     }
 
     public void TakeDamage(float amount){
@@ -111,6 +141,7 @@ public class Unit : MonoBehaviour {
             if (Vector3.Distance(transform.position, targetPosition) < 0.1f) {
                 targetIndex++;
                 if (targetIndex >= path.Length) {
+                    onReachedGoal.Invoke();
                     Destroy(gameObject);
                     yield break;
                 }

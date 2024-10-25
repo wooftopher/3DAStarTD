@@ -78,6 +78,14 @@ public class Player : MonoBehaviour {
     private void GameOver() {
         Debug.Log("Game Over! The player has lost all lives.");
         // Add game over handling here (e.g., reload scene, show game over UI, etc.)
+
+        // Get all game objects in the scene
+        GameObject[] allObjects = GameObject.FindObjectsOfType<GameObject>();
+
+        // Loop through and destroy each object
+        foreach (GameObject obj in allObjects) {
+            Destroy(obj);
+        }
     }
 
     // Method to update the UI with the current player's info

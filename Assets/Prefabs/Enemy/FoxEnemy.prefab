@@ -406,7 +406,7 @@ GameObject:
   - component: {fileID: 6740429288573203522}
   - component: {fileID: 2420665475048903546}
   m_Layer: 0
-  m_Name: Walker
+  m_Name: FoxEnemy
   m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -441,8 +441,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 180615518765536496, guid: add27119f73c83246b2698aceb34dd3a, type: 3}
-  speed: 2
-  HP: 100
+  speed: 0
+  HP: 0
+  enemyData: {fileID: 0}
   showPathGizmos: 0
   healthBar: {fileID: 263426139452758632}
 --- !u!33 &4133007805412136988
