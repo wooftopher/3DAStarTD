@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro; // Add this line for TextMesh Pro
+using TMPro;
 using UnityEngine.UI;
 
 public class InfoUI : MonoBehaviour {
@@ -7,6 +7,7 @@ public class InfoUI : MonoBehaviour {
     public TMP_Text text2; // Damage
     public TMP_Text text3; // Attack Speed
     public TMP_Text text4; // Attack Range
+    public Image towerSprite;
     public TMP_Text waveText;      // Current Wave
     public TMP_Text livesText;     // Lives
     public TMP_Text goldText;      // Gold
@@ -35,6 +36,7 @@ public class InfoUI : MonoBehaviour {
         text3.text = "Att Speed: " + (1 / tower.ShootCooldown).ToString("F2"); // Attack speed with description
         text4.text = "Range: " + tower.Range.ToString(); // Set range with description
         sellButtonText.text = "Sell (" + tower.Price.ToString() + ")";
+        towerSprite.sprite = tower.TowerSprite;
 
         ShowTowerPanel(); // Show tower panel when tower info is updated
     }

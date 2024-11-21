@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4226811953094323183}
   - component: {fileID: 9018656406975601927}
   m_Layer: 9
-  m_Name: Level1NetTower
+  m_Name: NetTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,13 +48,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   originalColor: {r: 0, g: 0, b: 0, a: 0}
-  level1TowerName: Net level 1
-  levelDamage: 5
-  levelRange: 5
-  levelShootCooldown: 3
   netStunDuration: 2
   netPrefab: {fileID: 1243268695471219912, guid: d510a4497aa5c9c4aa7477c402211c5b, type: 3}
-  level1TowerPrice: 100
+  towerData: {fileID: 11400000, guid: fddd1f173d48346468e27fab5f65b4c2, type: 2}
 --- !u!33 &5805471917889615372
 MeshFilter:
   m_ObjectHideFlags: 0

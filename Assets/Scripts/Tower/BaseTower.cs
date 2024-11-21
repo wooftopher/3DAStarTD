@@ -3,6 +3,7 @@ using UnityEngine;
 public class BaseTower : MonoBehaviour {
     // Properties for tower characteristics
     public virtual string TowerName { get; protected set; } // Name of the tower
+    public Sprite TowerSprite;
     protected GameObject missilePrefab;                      // Prefab for the missile
     protected float shootCooldown;                           // Cooldown between shots
     protected float range;                                   // Range to detect enemy units
@@ -31,14 +32,15 @@ public class BaseTower : MonoBehaviour {
         }
     }
 
-    // Method to initialize tower's stats
-    protected void InitializeTower(float damage, float range, float shootCooldown, GameObject missilePrefab, int price) {
-        this.damage = damage;                                // Set tower damage
-        this.range = range;                                  // Set tower range
-        this.shootCooldown = shootCooldown;                  // Set tower cooldown
-        this.missilePrefab = missilePrefab;                  // Set missile prefab
-        this.price = price;                                  // Set tower price
-        Debug.Log($"baseTower Initialized: Damage = {this.damage}, Range = {this.range}, ShootCooldown = {this.shootCooldown}, Price = {this.price}");
+    protected void InitializeTower(TowerDataSO towerData, GameObject missilePrefab){
+        damage = towerData.Damage;
+        range = towerData.Range;
+        shootCooldown = towerData.ShootCoolDown;
+        price = towerData.price;
+        TowerSprite = towerData.Sprite;
+        this.missilePrefab = missilePrefab;
+        // Debug.Log($"baseTower Initialized: Damage = {this.damage}, Range = {this.range}, ShootCooldown = {this.shootCooldown}, Price = {this.price}");
+
     }
 
     protected virtual void Update() {
