@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   originalColor: {r: 0, g: 0, b: 0, a: 0}
   levelMissilePrefab: {fileID: 1243268695471219912, guid: 611febb1ec8506747a89c815d3948ff7, type: 3}
-  towerData: {fileID: 11400000, guid: 229de0eb1946969408b4d2fc3e50796c, type: 2}
+  rangedTowerData: {fileID: 11400000, guid: 229de0eb1946969408b4d2fc3e50796c, type: 2}
 --- !u!33 &5805471917889615372
 MeshFilter:
   m_ObjectHideFlags: 0

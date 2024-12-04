@@ -50,7 +50,7 @@ MonoBehaviour:
   originalColor: {r: 0, g: 0, b: 0, a: 0}
   netStunDuration: 2
   netPrefab: {fileID: 1243268695471219912, guid: d510a4497aa5c9c4aa7477c402211c5b, type: 3}
-  towerData: {fileID: 11400000, guid: fddd1f173d48346468e27fab5f65b4c2, type: 2}
+  NetTowerData: {fileID: 11400000, guid: fddd1f173d48346468e27fab5f65b4c2, type: 2}
 --- !u!33 &5805471917889615372
 MeshFilter:
   m_ObjectHideFlags: 0

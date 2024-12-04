@@ -1,16 +1,15 @@
 using UnityEngine;
 
-public class Level1NetTower : BaseTower {
+public class NetTower : BaseTower {
     [SerializeField] private float netStunDuration;
     [SerializeField] private GameObject netPrefab;
-    [SerializeField] private TowerDataSO towerData;
+    [SerializeField] private TowerDataSO NetTowerData;
 
 
     protected override void Awake() {
         base.Awake();
 
-        InitializeTower(towerData, null);
-        TowerName = towerData.name;
+        InitializeTower(NetTowerData, null);
     }
 
     protected override void ShootAtTarget(Transform target) {
@@ -18,7 +17,7 @@ public class Level1NetTower : BaseTower {
         NetMissile missileComponent = netMissile.GetComponent<NetMissile>();
 
         if (missileComponent != null) {
-            missileComponent.SetTarget(target, towerData.Damage, netStunDuration); 
+            missileComponent.SetTarget(target, NetTowerData.damage, netStunDuration); 
         }
     }
 }

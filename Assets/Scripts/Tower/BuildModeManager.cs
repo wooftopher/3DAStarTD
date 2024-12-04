@@ -22,11 +22,6 @@ public class BuildModeManager : MonoBehaviour {
         } else if (Input.GetKeyDown(KeyCode.Alpha2)) {
             SetBuildMode(2);
         }
-        // } else if (Input.GetKeyDown(KeyCode.Alpha3)) {
-        //     SetBuildMode(3);
-        // } else if (Input.GetKeyDown(KeyCode.Alpha4)) {
-        //     SetBuildMode(4);
-        // }
     }
 
     void SetBuildMode(int mode) {

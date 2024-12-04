@@ -1,14 +1,13 @@
 using UnityEngine;
 
-public class Level1Tower : BaseTower {
+public class RangedTower : BaseTower {
     [SerializeField] private GameObject levelMissilePrefab;
-    [SerializeField] public TowerDataSO towerData;
+    [SerializeField] public TowerDataSO rangedTowerData;
 
     protected override void Awake() {
         base.Awake();
         
-        InitializeTower(towerData, levelMissilePrefab);
-        TowerName = towerData.name;
+        InitializeTower(rangedTowerData, levelMissilePrefab);
     }
 
     protected override void ShootAtTarget(Transform target) {
@@ -16,6 +15,6 @@ public class Level1Tower : BaseTower {
     }
 
     public int GetPrice() {
-        return towerData.price;
+        return rangedTowerData.price;
     }
 }

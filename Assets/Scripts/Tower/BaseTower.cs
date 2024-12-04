@@ -1,28 +1,17 @@
 using UnityEngine;
 
 public class BaseTower : MonoBehaviour {
-    // Properties for tower characteristics
-    public virtual string TowerName { get; protected set; } // Name of the tower
-    public Sprite TowerSprite;
-    protected GameObject missilePrefab;                      // Prefab for the missile
-    protected float shootCooldown;                           // Cooldown between shots
-    protected float range;                                   // Range to detect enemy units
-    protected float damage;                                  // Damage dealt by the tower
-    protected int price;                                   // Price of the tower
-    protected Transform firePoint;                             // Point where the missile spawns
-    protected Transform currentTarget;                       // Current enemy target
-    private float shootTimer;                                // Timer to track shooting cooldown
-    public Color originalColor;
 
-    // Public getters for tower attributes
-    public float Damage => damage;                           // Getter for damage
-    public float Range => range;                             // Getter for range
-    public float ShootCooldown => shootCooldown;            // Getter for shoot cooldown
-    public int Price => price;                             // Getter for tower price
+    private TowerDataSO towerData;
+    protected GameObject missilePrefab;
+    protected Transform firePoint;
+    protected Transform currentTarget;
+    private float shootTimer;
+    public Color originalColor;
+    
 
     protected virtual void Awake() {
-        firePoint = transform;                               // Set firePoint to be at the center of the tower's position
-        shootTimer = shootCooldown;                          // Start with full cooldown time
+        firePoint = transform;
 
         Renderer renderer = GetComponent<Renderer>();
         if (renderer != null) {
@@ -32,15 +21,9 @@ public class BaseTower : MonoBehaviour {
         }
     }
 
-    protected void InitializeTower(TowerDataSO towerData, GameObject missilePrefab){
-        damage = towerData.Damage;
-        range = towerData.Range;
-        shootCooldown = towerData.ShootCoolDown;
-        price = towerData.price;
-        TowerSprite = towerData.Sprite;
+    protected void InitializeTower(TowerDataSO towerData, GameObject missilePrefab) {
+        this.towerData = towerData;
         this.missilePrefab = missilePrefab;
-        // Debug.Log($"baseTower Initialized: Damage = {this.damage}, Range = {this.range}, ShootCooldown = {this.shootCooldown}, Price = {this.price}");
-
     }
 
     protected virtual void Update() {
@@ -50,7 +33,7 @@ public class BaseTower : MonoBehaviour {
         // Find and shoot at enemy targets if cooldown allows
         if (shootTimer <= 0f) {
             FindAndShootTarget();                            // Attempt to find and shoot at a target
-            shootTimer = shootCooldown;                      // Reset cooldown timer after shooting
+            shootTimer = towerData.shootCooldown;                      // Reset cooldown timer after shooting
         }
 
         // Always face the current target if there is one
@@ -75,12 +58,12 @@ public class BaseTower : MonoBehaviour {
     }
 
     protected bool IsTargetInRange(Transform target) {
-        return Vector3.Distance(transform.position, target.position) <= range; // Check if target is within range
+        return Vector3.Distance(transform.position, target.position) <= towerData.range; // Check if target is within range
     }
 
     protected Transform FindNearestTarget() {
         // Find all colliders within range
-        Collider[] colliders = Physics.OverlapSphere(transform.position, range);
+        Collider[] colliders = Physics.OverlapSphere(transform.position, towerData.range);
         Transform nearestTarget = null;
         float minDistance = Mathf.Infinity;
 
@@ -106,13 +89,17 @@ public class BaseTower : MonoBehaviour {
         // Set target and damage for the missile
         if (missileComponent != null) {
             missileComponent.SetTarget(target);               // Set the target for the missile
-            missileComponent.SetDamage(damage);               // Set the damage for the missile
+            missileComponent.SetDamage(towerData.damage);               // Set the damage for the missile
         }
     }
 
     protected virtual void OnDrawGizmosSelected() {
         // Visualize the tower's range in the Scene view
         Gizmos.color = Color.red;                           // Set color for the range visualization
-        Gizmos.DrawWireSphere(transform.position, range);   // Draw a wire sphere to indicate range
+        Gizmos.DrawWireSphere(transform.position, towerData.range);   // Draw a wire sphere to indicate range
+    }
+
+    public TowerDataSO GetTowerData() {
+        return towerData;
     }
 }

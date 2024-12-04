@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3a3e9ff716acab4e9fca575945c63cf, type: 3}
   m_Name: NetLevel1
   m_EditorClassIdentifier: 
-  Name: Net Level 1
-  Damage: 5
-  Range: 5
-  ShootCoolDown: 2
+  towerName: Net Tower
+  damage: 2
+  range: 5
+  shootCooldown: 2
   price: 100
-  Sprite: {fileID: 21300000, guid: a4a9bfae180b99b489053cc747e0cf8a, type: 3}
+  sprite: {fileID: 21300000, guid: a4a9bfae180b99b489053cc747e0cf8a, type: 3}

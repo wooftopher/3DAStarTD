@@ -93,7 +93,7 @@ public class WallPlacement : MonoBehaviour {
         // Add logic here to handle different build modes based on currentBuildMode
     }
     void Update() {
-        if (currentBuildMode != 1) {
+        if (Input.GetKeyDown(KeyCode.Alpha1)) {
             infoUI.ShowEmptyPanel();
             ResetWallColor(lastHoveredWall);
             ResetWallColor(selectedWall);
@@ -208,8 +208,6 @@ public class WallPlacement : MonoBehaviour {
             return;
         }
 
-        // infoUI.UpdateWallInfo(selectedWall); // Update the wall info in the UI
-
         // Change the color of the selected wall to a darker blue tint
         Renderer wallRenderer = selectedWall.GetComponent<Renderer>();
         if (wallRenderer != null) {
@@ -277,18 +275,15 @@ public class WallPlacement : MonoBehaviour {
         }
 
         infoUI.ShowTowerPanel();
-        infoUI.UpdateTowerInfo(selectedTower);
+        infoUI.UpdateTowerInfo(selectedTower.GetTowerData());
 
         // Change the color of the selected tower to a moderate light greenish tint
         Renderer towerRenderer = selectedTower.GetComponent<Renderer>();
         if (towerRenderer != null) {
             towerRenderer.material.color = new Color(0.6f, 1f, 0.6f, 1f); // Moderate light green filter
-            // towerRenderer.material.color = Color.black; // Set color to black
         } else {
             Debug.LogError("Renderer not found on the selected tower!");
         }
-
-        // Debug.Log("Selected Tower: " + selectedTower.name); // Debug message for selected tower
     }
 
     void ResetTowerColor(BaseTower tower) {
@@ -300,12 +295,10 @@ public class WallPlacement : MonoBehaviour {
         }
     }
     private void SellTower() {
-        // Logic to sell the tower
-        player.EarnGold(selectedTower.Price); // Give gold back to player
-        Destroy(selectedTower.gameObject); // Destroy the tower
-        selectedTower = null; // Clear the selected tower
+        player.EarnGold(selectedTower.GetTowerData().price);
+        Destroy(selectedTower.gameObject);
+        selectedTower = null;
         infoUI.ShowEmptyPanel();
-        // infoUI.UpdateTowerInfo(null); // Update UI to clear tower info
     }
     private void SellWall() {
         Debug.Log("sell press");
@@ -316,7 +309,6 @@ public class WallPlacement : MonoBehaviour {
         Destroy(selectedWall.gameObject); // Destroy the tower
         selectedWall = null; // Clear the selected tower
         infoUI.ShowEmptyPanel();
-        // infoUI.UpdateTowerInfo(null); // Update UI to clear tower info
     }
 
     BaseTower GetTowerUnderMouse() {
@@ -343,8 +335,6 @@ public class WallPlacement : MonoBehaviour {
                 // Debug.Log("Collision detected with wall: " + wall.name);
                 return wall;
             }
-        // } else {
-        //     Debug.Log("No collision detected.");
         }
 
         return null;
@@ -379,15 +369,22 @@ public class WallPlacement : MonoBehaviour {
 
         // Access the BaseTower component to get its information
         BaseTower baseTower = towerObject.GetComponent<BaseTower>();
+
         if (baseTower != null) {
+            // Ensure the towerData is initialized before accessing it
+            if (baseTower.GetTowerData() != null) {
+                // Safe to access towerData
+                Debug.Log(baseTower.GetTowerData().price);
+            } else {
+                Debug.LogError("TowerData is not initialized yet");
+                return; // Exit if towerData is not initialized yet
+            }
+
             // Access the tower cost from the BaseTower component
-            int towerCost = baseTower.Price;
+            int towerCost = baseTower.GetTowerData().price;
 
             // Check if the player can afford the tower
             if (player.CanBuildTower(towerCost)) {
-                // Log tower details
-                Debug.Log($"Tower placed: {baseTower.TowerName}, Damage: {baseTower.Damage}, Range: {baseTower.Range}, Cost: {towerCost}");
-
                 // Deduct the tower cost from the player's gold
                 player.SpendGold(towerCost);
 
@@ -401,9 +398,6 @@ public class WallPlacement : MonoBehaviour {
             Debug.LogError("BaseTower component not found on the instantiated tower!");
         }
     }
-
-
-
 
 
     void PlaceWallAtNode(Node node) {
@@ -458,36 +452,4 @@ public class WallPlacement : MonoBehaviour {
             Debug.LogWarning("Node is not walkable or buildable.");
         }
     }
-
-
-
-//     void RemoveWallAtNode(Node node) {
-//         if (node == null) {
-//             Debug.LogError("Node is null!");
-//             return;
-//         }
-        
-//         if (!node.walkable) {
-//             // Check if the wall exists
-//             if (node.wallObject != null) {
-//                 // Get the Wall component to access the tower
-//                 Wall wall = node.wallObject.GetComponent<Wall>();
-
-//                 // Check if the tower exists and destroy it
-//                 if (wall.towerObject != null) {
-//                     Destroy(wall.towerObject);
-//                     Debug.Log("Tower removed.");
-//                 }
-
-//                 // Destroy the wall object
-//                 Destroy(node.wallObject);
-//                 node.wallObject = null; // Clear the reference to the wall object
-//                 player.EarnIceBlock(1);
-//             }
-            
-//             node.walkable = true; // Set the node to walkable
-//         } else {
-//             Debug.Log("Node is not walkable.");
-//         }
-//     }
 }

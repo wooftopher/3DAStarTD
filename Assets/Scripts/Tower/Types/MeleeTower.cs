@@ -4,13 +4,12 @@ using System.Collections;
 public class MeleeTower : BaseTower {
     [SerializeField] private GameObject axePrefab;
 
-    [SerializeField] private TowerDataSO towerData;
+    [SerializeField] private TowerDataSO meeleTowerData;
 
     protected override void Awake() {
         base.Awake();
 
-        InitializeTower(towerData, axePrefab);
-        TowerName = towerData.name;
+        InitializeTower(meeleTowerData, axePrefab);
     }
 
     protected override void ShootAtTarget(Transform target) {
@@ -73,8 +72,8 @@ public class MeleeTower : BaseTower {
         }
 
         if (target != null && targetUnit != null) {
-            targetUnit.TakeDamage(towerData.Damage);
-            Debug.Log($"Dealt {towerData.Damage} damage to {target.name}");
+            targetUnit.TakeDamage(meeleTowerData.damage);
+            Debug.Log($"Dealt {meeleTowerData.damage} damage to {target.name}");
         }
 
         if (axeObject != null) {
@@ -83,6 +82,6 @@ public class MeleeTower : BaseTower {
     }
 
     public int GetPrice() {
-        return towerData.price;
+        return meeleTowerData.price;
     }
 }

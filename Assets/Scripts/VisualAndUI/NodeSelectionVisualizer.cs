@@ -6,23 +6,17 @@ public class NodeSelectionVisualizer : MonoBehaviour {
     private GameObject currentTowerVisual;
     private GameObject currentNodeVisual;
     private Renderer nodeVisualRenderer;
-    private Renderer towerVisualRenderer;
+
 
     [HideInInspector]
     public Node nodeUnderMouse; // This will be updated by NodeSelector
     public float nodeDiameter;
 
     void Start() {
-        // Instantiate the node visual but keep it disabled initially
         currentNodeVisual = Instantiate(nodeVisualPrefab);
         currentNodeVisual.SetActive(false);
 
-        // Get the renderer component for changing the color
         nodeVisualRenderer = currentNodeVisual.GetComponent<Renderer>();
-
-        // currentTowerVisual = Instantiate(towerVisualPrefab);
-        // currentTowerVisual.SetActive(false);
-        // towerVisualRenderer = currentTowerVisual.GetComponent<Renderer>();
     }
 
     public void ShowNodeVisual(Node node){

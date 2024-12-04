@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3a3e9ff716acab4e9fca575945c63cf, type: 3}
   m_Name: MeeleLevel1
   m_EditorClassIdentifier: 
-  Name: Meele level 1
-  Damage: 20
-  Range: 2
-  ShootCoolDown: 0.5
+  towerName: Meele Tower
+  damage: 10
+  range: 2
+  shootCooldown: 0.4
   price: 100
-  Sprite: {fileID: 21300000, guid: b9f9ee4ebf6d74c4b8c980cae159f175, type: 3}
+  sprite: {fileID: 21300000, guid: b9f9ee4ebf6d74c4b8c980cae159f175, type: 3}

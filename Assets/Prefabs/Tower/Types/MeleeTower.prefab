@@ -48,14 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   originalColor: {r: 1, g: 1, b: 1, a: 0}
-  image: {fileID: 21300000, guid: b9f9ee4ebf6d74c4b8c980cae159f175, type: 3}
-  level1TowerName: Melee lvl 1
-  levelDamage: 20
-  levelRange: 2
-  levelShootCooldown: 0.5
   axePrefab: {fileID: 1243268695471219912, guid: c248f230089fec8428051fa4ef534c42, type: 3}
-  level1TowerPrice: 100
-  towerData: {fileID: 11400000, guid: d54334ef25af776418e2cc5034052b0c, type: 2}
+  meeleTowerData: {fileID: 11400000, guid: d54334ef25af776418e2cc5034052b0c, type: 2}
 --- !u!33 &5805471917889615372
 MeshFilter:
   m_ObjectHideFlags: 0

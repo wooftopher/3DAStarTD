@@ -23,7 +23,7 @@ public class InfoUI : MonoBehaviour {
         ShowEmptyPanel();
     }
 
-    public void UpdateTowerInfo(BaseTower tower) {
+    public void UpdateTowerInfo(TowerDataSO tower) {
         if (tower == null) {
             Debug.LogError("Tower is null!");
             ShowEmptyPanel(); // Show empty panel if no tower is selected
@@ -31,12 +31,12 @@ public class InfoUI : MonoBehaviour {
         }
 
         // Set tower name using the getter
-        text1.text = tower.TowerName; // Fallback for null
-        text2.text = "Damage: " + tower.Damage.ToString(); // Set damage with description
-        text3.text = "Att Speed: " + (1 / tower.ShootCooldown).ToString("F2"); // Attack speed with description
-        text4.text = "Range: " + tower.Range.ToString(); // Set range with description
-        sellButtonText.text = "Sell (" + tower.Price.ToString() + ")";
-        towerSprite.sprite = tower.TowerSprite;
+        text1.text = tower.towerName; // Fallback for null
+        text2.text = "Damage: " + tower.damage.ToString(); // Set damage with description
+        text3.text = "Att Speed: " + (1 / tower.shootCooldown).ToString("F2"); // Attack speed with description
+        text4.text = "Range: " + tower.range.ToString(); // Set range with description
+        sellButtonText.text = "Sell (" + tower.price.ToString() + ")";
+        towerSprite.sprite = tower.sprite;
 
         ShowTowerPanel(); // Show tower panel when tower info is updated
     }
