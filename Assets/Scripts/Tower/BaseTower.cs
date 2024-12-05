@@ -1,7 +1,10 @@
 using UnityEngine;
 
-public class BaseTower : MonoBehaviour {
+public class BaseTower : MonoBehaviour, ISelectable {
 
+    private WallPlacement builderManager;
+    private InfoUI infoUI;
+    private Renderer towerRenderer;
     private TowerDataSO towerData;
     protected GameObject missilePrefab;
     protected Transform firePoint;
@@ -11,11 +14,19 @@ public class BaseTower : MonoBehaviour {
     
 
     protected virtual void Awake() {
+        builderManager = FindObjectOfType<WallPlacement>();//<-- to fix
+        if (builderManager == null) {
+            Debug.LogError("No WallPlacement found in the scene!");
+        }
+        infoUI = FindObjectOfType<InfoUI>();  // This will find the first InfoUI component in the scene
+        if (infoUI == null) {
+            Debug.LogError("No InfoUI found in the scene!");
+        }
         firePoint = transform;
 
-        Renderer renderer = GetComponent<Renderer>();
-        if (renderer != null) {
-            originalColor = renderer.material.color;
+        towerRenderer = GetComponent<Renderer>();
+        if (towerRenderer != null) {
+            originalColor = towerRenderer.material.color;
         } else {
             Debug.LogError("Renderer not found on the wall!");
         }
@@ -101,5 +112,32 @@ public class BaseTower : MonoBehaviour {
 
     public TowerDataSO GetTowerData() {
         return towerData;
+    }
+
+    public void ResetColor() {
+        if (towerRenderer != null) {
+            towerRenderer.material.color = originalColor;
+        }
+    }
+
+    public void Select() {
+        ISelectable lastSelected = builderManager.GetLastSelectedSelectable();
+        if (lastSelected != null) {
+            lastSelected.ResetColor();  // Reset color on the last selected object
+        }
+        builderManager.SetLastSelectedSelectable(this);
+    
+        if (infoUI == null) {
+            Debug.LogError("InfoUI is not assigned!");
+            return;
+        }
+        infoUI.ShowTowerPanel();
+        infoUI.UpdateTowerInfo(GetTowerData());
+
+        if (towerRenderer != null) {
+            towerRenderer.material.color = new Color(0.6f, 1f, 0.6f, 1f); // Moderate light green filter
+        } else {
+            Debug.LogError("Renderer not found on the selected tower!");
+        }
     }
 }

@@ -136,9 +136,11 @@ GameObject:
   - component: {fileID: 72902633}
   - component: {fileID: 72902634}
   - component: {fileID: 72902636}
+  - component: {fileID: 72902640}
   - component: {fileID: 72902635}
   - component: {fileID: 72902637}
   - component: {fileID: 72902638}
+  - component: {fileID: 72902641}
   m_Layer: 0
   m_Name: A*
   m_TagString: Untagged
@@ -226,11 +228,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e420639bc15458b4b81a19de3409dd0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sellButtonTower: {fileID: 2027815565}
-  sellButtonWall: {fileID: 2015133846}
-  rangeTowerButton: {fileID: 1833140006}
-  meleeTowerButton: {fileID: 244634780}
-  netTowerButton: {fileID: 422346538}
   wallPrefab: {fileID: 8881462590957379166, guid: 26152b3d010bd3940befea68c57f164d, type: 3}
   towerPrefabMelee: {fileID: 8447708532514601830, guid: 37cf6b4bbc0050648924b0f654dfa746, type: 3}
   towerPrefabRange: {fileID: 8447708532514601830, guid: bd01782e729e19c46aa287270c7856d9, type: 3}
@@ -250,7 +247,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodeVisualPrefab: {fileID: 39882032178363427, guid: cca85aa0734a8ce46a7a001c5dba6614, type: 3}
-  towerVisualPrefab: {fileID: 8447708532514601830, guid: f21c3b8a7441c89419555bfaefd16e00, type: 3}
   nodeDiameter: 1
 --- !u!114 &72902637
 MonoBehaviour:
@@ -284,6 +280,35 @@ MonoBehaviour:
   gold: 1000
   lives: 10
   iceBlocks: 10
+--- !u!114 &72902640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 72902630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 850b7bf763cc79f4daeb2fabc806180b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sellButtonTower: {fileID: 2027815565}
+  sellButtonWall: {fileID: 2015133846}
+  rangeTowerButton: {fileID: 1833140006}
+  meleeTowerButton: {fileID: 244634780}
+  netTowerButton: {fileID: 422346538}
+--- !u!114 &72902641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 72902630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be73cd59a6ad31a4fa5a92b3f808aab4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &226531873 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7229419164839542324, guid: add27119f73c83246b2698aceb34dd3a, type: 3}

@@ -4,17 +4,9 @@ using UnityEngine.UI;
 
 public class WallPlacement : MonoBehaviour {
 
-    // private Grid grid;
-    public Button sellButtonTower;
-    public Button sellButtonWall;
+    private VisualizerManager visualizerManager;
+    private UIInputManager uIInputManager;
 
-    public Button rangeTowerButton;
-    public Button meleeTowerButton;
-    public Button netTowerButton;
-
-
-
-    private NodeSelectionVisualizer Nodevisualizer;
     public GameObject wallPrefab;
     public GameObject towerPrefabMelee;
     public GameObject towerPrefabRange;
@@ -22,71 +14,85 @@ public class WallPlacement : MonoBehaviour {
 
     public Transform spawner;
     public Transform goal;
+
     private InfoUI infoUI;
     private Player player;
+
     private int currentBuildMode;
     private int wallLayerMask;
     private int towerLayerMask;
 
     private Wall lastHoveredWall;
-    private Wall selectedWall;
+    public Wall GetLastHoveredWall(){
+        return lastHoveredWall;
+    }
+    // public void SetLastHoveredWall(Wall lastHoveredWall){
+    //     this.lastHoveredWall = lastHoveredWall;
+    // }
     private BaseTower lasthoveredTower;
+    public BaseTower GetLastHoveredTower(){
+        return lasthoveredTower;
+    }
+
+    private Wall selectedWall;
+
+    public void SetSelectedWall(Wall selectedWall){
+        this.selectedWall = selectedWall;
+    }
+
     private BaseTower selectedTower;
+    public BaseTower GetSelectedTower(){
+        return selectedTower;
+    }
+    public Wall GetSelectedWall(){
+        return selectedWall;
+    }
 
+    private ISelectable lastSelectedSelectable;
+    private ISelectable lastHoveredSelectable;
 
+    public ISelectable GetLastSelectedSelectable(){
+        return lastSelectedSelectable;
+    }
+    public ISelectable GetSelectedSelectable() {
+        return lastSelectedSelectable;
+    }
 
-    private bool isSellButtonTowerPressed = false;
-    private bool isSellButtonWallPressed = false;
+    public void SetLastSelectedSelectable(ISelectable lastSelectedSelectable){
+        this.lastSelectedSelectable = lastSelectedSelectable;
+    }
+    public void SetLastHoveredSelectable(ISelectable lastHoveredSelectable) {
+        this.lastHoveredSelectable = lastHoveredSelectable;
+    }
+
+    private void Awake(){
+        visualizerManager = GetComponent<VisualizerManager>();
+        uIInputManager = GetComponent<UIInputManager>();
+        uIInputManager.OnSellTower += SellTower;
+        uIInputManager.OnSellWall += SellWall;
+        uIInputManager.OnPlaceTowerOnWall += PlaceTowerOnWall;
+    }
     void Start(){
-        Nodevisualizer = GetComponent<NodeSelectionVisualizer>();
-        wallLayerMask = LayerMask.GetMask("Wall"); // Replace "Wall" with your layer name
+        wallLayerMask = LayerMask.GetMask("Wall");
         towerLayerMask = LayerMask.GetMask("Tower");
         infoUI = FindObjectOfType<InfoUI>();
         player = FindObjectOfType<Player>();
-        sellButtonTower.onClick.AddListener(OnSellButtonTowerPressed);
-        sellButtonWall.onClick.AddListener(OnSellButtonWallPressed);
-        rangeTowerButton.onClick.AddListener(OnRangeTowerButtonPressed);
-        meleeTowerButton.onClick.AddListener(OnMeleeTowerButtonPressed);
-        netTowerButton.onClick.AddListener(OnNetTowerButtonPressed);
-
-
-    }
-    private void OnSellButtonTowerPressed() {
-        if(selectedTower)
-            isSellButtonTowerPressed = true; // Mark the sell button as pressed
-    }
-    private void OnSellButtonWallPressed() {
-        if(selectedWall)
-            isSellButtonWallPressed = true; // Mark the sell button as pressed
     }
 
-    private void OnRangeTowerButtonPressed() {
-        if (selectedWall != null && selectedWall.towerObject == null) {
-            // Place the tower on the selected wall
-            PlaceTowerOnWall(selectedWall, 1);
-        } else {
-            Debug.LogWarning("No wall selected or tower already exists on the wall!");
-        }
+    private void SellTower(BaseTower towerToSell) {
+        player.EarnGold(towerToSell.GetTowerData().price);
+        Destroy(towerToSell.gameObject);
+        selectedTower = null;
+        infoUI.ShowEmptyPanel();
     }
-
-    private void OnMeleeTowerButtonPressed() {
-        if (selectedWall != null && selectedWall.towerObject == null) {
-            // Place the tower on the selected wall
-            PlaceTowerOnWall(selectedWall, 2);
-        } else {
-            Debug.LogWarning("No wall selected or tower already exists on the wall!");
-        }
+    private void SellWall(Wall wallToSell) {
+        player.EarnIceBlock(1);
+        wallToSell.node.walkable = true;
+        wallToSell.node.isBuildable = true;
+        Destroy(wallToSell.gameObject);
+        selectedWall = null;
+        infoUI.ShowEmptyPanel();
     }
-
-    private void OnNetTowerButtonPressed() {
-        if (selectedWall != null && selectedWall.towerObject == null) {
-            // Place the tower on the selected wall
-            PlaceTowerOnWall(selectedWall, 3);
-        } else {
-            Debug.LogWarning("No wall selected or tower already exists on the wall!");
-        }
-    }
-
 
     public void SetBuildMode(int mode) {
         currentBuildMode = mode;
@@ -95,28 +101,29 @@ public class WallPlacement : MonoBehaviour {
     void Update() {
         if (Input.GetKeyDown(KeyCode.Alpha1)) {
             infoUI.ShowEmptyPanel();
-            ResetWallColor(lastHoveredWall);
-            ResetWallColor(selectedWall);
-            selectedWall = null;
-            lastHoveredWall = null;
-            ResetTowerColor(lasthoveredTower);
-            ResetTowerColor(selectedTower);
-            selectedTower = null;
-            lasthoveredTower = null;
+            if (lastHoveredSelectable != null) {
+                lastHoveredSelectable.ResetColor();
+            }
+            if (lastSelectedSelectable != null) {
+                lastSelectedSelectable.ResetColor(); 
+            }
+            // Clear the selected and hovered selectables
+            lastSelectedSelectable = null;
+            lastHoveredSelectable = null;
         }
         if (currentBuildMode != 2){}
-            Nodevisualizer.HideVisualizer();
+            visualizerManager.GetNodeSelectionVisualizer().HideVisualizer();
         if (currentBuildMode == 1) {
-            BaseTower towerUnderMouse = GetTowerUnderMouse();
+            BaseTower towerUnderMouse = GetTowerUnderMouse();///<---please help
             if (towerUnderMouse) {
                 HighlightTower(towerUnderMouse);
 
                 if (Input.GetMouseButtonDown(0)) { // Left mouse button
-                    SelectTower(towerUnderMouse); // Select the tower
+                    towerUnderMouse.Select();
                 }
             } else if (lasthoveredTower != null && lasthoveredTower != selectedTower) {
                 // If no tower is under the mouse, reset the highlight for the previously hovered tower
-                ResetTowerColor(lasthoveredTower);
+                lasthoveredTower.ResetColor();
                 lasthoveredTower = null; // Clear the reference to the hovered tower
             }
 
@@ -125,21 +132,11 @@ public class WallPlacement : MonoBehaviour {
             if (wallUnderMouse) {
                 HighlightWall(wallUnderMouse);
                 if (Input.GetMouseButtonDown(0)) {
-                    SelectWall(wallUnderMouse);
+                    wallUnderMouse.Select();
                 }
-            } else if (lastHoveredWall != null && lastHoveredWall != selectedWall) {
-                ResetWallColor(lastHoveredWall);
+            } else if (lastHoveredWall != null && lastHoveredWall != selectedWall ) {
+                lastHoveredWall.ResetColor();
                 lastHoveredWall = null; // Clear the last hovered wall
-            }
-
-            // Handle sell button logic
-            if (isSellButtonTowerPressed) {
-                SellTower(); // Call the sell tower method
-                isSellButtonTowerPressed = false; // Reset the button press state
-            }
-            if (isSellButtonWallPressed) {
-                SellWall(); // Call the sell tower method
-                isSellButtonWallPressed = false; // Reset the button press state
             }
         }
 
@@ -150,9 +147,9 @@ public class WallPlacement : MonoBehaviour {
             if (nodeUnderMouse != null) {
                 // Check if there is already a wall at the node
                 if (nodeUnderMouse.wallObject) { // Assuming Node has a method HasWall
-                    Nodevisualizer.HideVisualizer(); // Hide visualizer if a wall is present
+                    visualizerManager.GetNodeSelectionVisualizer().HideVisualizer(); // Hide visualizer if a wall is present
                 } else {
-                    Nodevisualizer.ShowNodeVisual(nodeUnderMouse);
+                    visualizerManager.GetNodeSelectionVisualizer().ShowNodeVisual(nodeUnderMouse);
                     if (Input.GetMouseButtonDown(0)) { // Left mouse button
                         PlaceWallAtNode(nodeUnderMouse);
                     }
@@ -160,11 +157,74 @@ public class WallPlacement : MonoBehaviour {
             }
             else {
                 // Optional: Hide the visualizer if the node is out of bounds
-                Nodevisualizer.HideVisualizer();
+                visualizerManager.GetNodeSelectionVisualizer().HideVisualizer();
             }
         }
 
     }
+    // void Update() {
+    //     if (Input.GetKeyDown(KeyCode.Alpha1)) {
+    //         infoUI.ShowEmptyPanel();
+    //         ResetWallColor(lastHoveredWall);
+    //         ResetWallColor(selectedWall);
+    //         selectedWall = null;
+    //         lastHoveredWall = null;
+    //         ResetTowerColor(lasthoveredTower);
+    //         ResetTowerColor(selectedTower);
+    //         selectedTower = null;
+    //         lasthoveredTower = null;
+    //     }
+    //     if (currentBuildMode != 2){}
+    //         visualizerManager.GetNodeSelectionVisualizer().HideVisualizer();
+    //     if (currentBuildMode == 1) {
+    //         BaseTower towerUnderMouse = GetTowerUnderMouse();
+    //         if (towerUnderMouse) {
+    //             HighlightTower(towerUnderMouse);
+
+    //             if (Input.GetMouseButtonDown(0)) { // Left mouse button
+    //                 SelectTower(towerUnderMouse); // Select the tower
+    //             }
+    //         } else if (lasthoveredTower != null && lasthoveredTower != selectedTower) {
+    //             // If no tower is under the mouse, reset the highlight for the previously hovered tower
+    //             ResetTowerColor(lasthoveredTower);
+    //             lasthoveredTower = null; // Clear the reference to the hovered tower
+    //         }
+
+    //         // Highlight walls
+    //         Wall wallUnderMouse = GetWallUnderMouse();
+    //         if (wallUnderMouse) {
+    //             HighlightWall(wallUnderMouse);
+    //             if (Input.GetMouseButtonDown(0)) {
+    //                 SelectWall(wallUnderMouse);
+    //             }
+    //         } else if (lastHoveredWall != null && lastHoveredWall != selectedWall) {
+    //             ResetWallColor(lastHoveredWall);
+    //             lastHoveredWall = null; // Clear the last hovered wall
+    //         }
+    //     }
+
+    //     else if (currentBuildMode == 2) {
+    //         Vector3 mouseWorldPosition = Grid.Instance.GetMouseWorldPosition();
+    //         Node nodeUnderMouse = Grid.Instance.NodeFromWorldPoint(mouseWorldPosition);
+
+    //         if (nodeUnderMouse != null) {
+    //             // Check if there is already a wall at the node
+    //             if (nodeUnderMouse.wallObject) { // Assuming Node has a method HasWall
+    //                 visualizerManager.GetNodeSelectionVisualizer().HideVisualizer(); // Hide visualizer if a wall is present
+    //             } else {
+    //                 visualizerManager.GetNodeSelectionVisualizer().ShowNodeVisual(nodeUnderMouse);
+    //                 if (Input.GetMouseButtonDown(0)) { // Left mouse button
+    //                     PlaceWallAtNode(nodeUnderMouse);
+    //                 }
+    //             }
+    //         }
+    //         else {
+    //             // Optional: Hide the visualizer if the node is out of bounds
+    //             visualizerManager.GetNodeSelectionVisualizer().HideVisualizer();
+    //         }
+    //     }
+
+    // }
     
     // Function to highlight the wall when hovered
     private void HighlightWall(Wall wall) {
@@ -172,7 +232,7 @@ public class WallPlacement : MonoBehaviour {
             Renderer wallRenderer = wall.GetComponent<Renderer>();
             if (wallRenderer != null) {
                 if (lastHoveredWall != null && lastHoveredWall != selectedWall) {
-                    ResetWallColor(lastHoveredWall);
+                    lastHoveredWall.ResetColor();
                 }
 
                 lastHoveredWall = wall; // Set the current wall as hovered
@@ -186,46 +246,7 @@ public class WallPlacement : MonoBehaviour {
         }
     }
 
-    void SelectWall(Wall wall) {
-        // Check if the wall parameter is null
-        if (wall == null) {
-            Debug.LogError("SelectWall called with a null wall!");
-            return;
-        }
 
-        // If there's already a selected wall, reset its color
-        if (selectedWall != null) {
-            ResetWallColor(selectedWall);
-        }
-        if (selectedTower != null)
-            ResetTowerColor(selectedTower);
-
-        selectedWall = wall; // Set the new selected wall
-
-        // Ensure infoUI is not null before calling the method
-        if (infoUI == null) {
-            Debug.LogError("InfoUI is not assigned!");
-            return;
-        }
-
-        // Change the color of the selected wall to a darker blue tint
-        Renderer wallRenderer = selectedWall.GetComponent<Renderer>();
-        if (wallRenderer != null) {
-            wallRenderer.material.color = new Color(0.2f, 0.3f, 0.6f, 1f); // Darker blue filter
-        } else {
-            Debug.LogError("Renderer not found on the selected wall!");
-        }
-        infoUI.ShowWallPanel();
-    }
-
-    void ResetWallColor(Wall wall) {
-        if (wall != null) {
-            Renderer wallRenderer = wall.GetComponent<Renderer>();
-            if (wallRenderer != null) {
-                wallRenderer.material.color = wall.originalColor; // Restore the original color
-            }
-        }
-    }
 
     // Function to highlight the tower when hovered
     private void HighlightTower(BaseTower tower) {
@@ -234,7 +255,7 @@ public class WallPlacement : MonoBehaviour {
             if (towerRenderer != null) {
                 // Store the original color if it's not already stored
                 if (lasthoveredTower != null  && lasthoveredTower != selectedTower) {
-                    ResetTowerColor(lasthoveredTower); // Reset previous hover highlight
+                    lasthoveredTower.ResetColor(); // Reset previous hover highlight
                 }
 
                 // Store the currently hovered tower
@@ -249,67 +270,90 @@ public class WallPlacement : MonoBehaviour {
             }
         }
     }
+    // void SelectWall(Wall wall) {
+    //     // Check if the wall parameter is null
+    //     if (wall == null) {
+    //         Debug.LogError("SelectWall called with a null wall!");
+    //         return;
+    //     }
 
-    void SelectTower(BaseTower tower) {
-        // Check if the tower parameter is null
-        if (tower == null) {
-            Debug.LogError("SelectTower called with a null tower!");
-            return;
-        }
+    //     // If there's already a selected wall, reset its color
+    //     if (selectedWall != null) {
+    //         ResetWallColor(selectedWall);
+    //     }
+    //     if (selectedTower != null)
+    //         ResetTowerColor(selectedTower);
 
-        // If there's already a selected tower, reset its color
-        if (selectedTower != null) {
-            ResetTowerColor(selectedTower);
-        }
-        if (selectedWall != null) {
-            ResetWallColor(selectedWall);
-        }
+    //     selectedWall = wall; // Set the new selected wall
 
-        selectedTower = tower; // Set the new selected tower
+    //     // Ensure infoUI is not null before calling the method
+    //     if (infoUI == null) {
+    //         Debug.LogError("InfoUI is not assigned!");
+    //         return;
+    //     }
+
+    //     // Change the color of the selected wall to a darker blue tint
+    //     Renderer wallRenderer = selectedWall.GetComponent<Renderer>();
+    //     if (wallRenderer != null) {
+    //         wallRenderer.material.color = new Color(0.2f, 0.3f, 0.6f, 1f); // Darker blue filter
+    //     } else {
+    //         Debug.LogError("Renderer not found on the selected wall!");
+    //     }
+    //     infoUI.ShowWallPanel();
+    // }
+
+    // void ResetWallColor(Wall wall) {
+    //     if (wall != null) {
+    //         Renderer wallRenderer = wall.GetComponent<Renderer>();
+    //         if (wallRenderer != null) {
+    //             wallRenderer.material.color = wall.originalColor; // Restore the original color
+    //         }
+    //     }
+    // }
+    // void SelectTower(BaseTower tower) {
+    //     // Check if the tower parameter is null
+    //     if (tower == null) {
+    //         Debug.LogError("SelectTower called with a null tower!");
+    //         return;
+    //     }
+
+    //     // If there's already a selected tower, reset its color
+    //     if (selectedTower != null) {
+    //         ResetTowerColor(selectedTower);
+    //     }
+    //     if (selectedWall != null) {
+    //         ResetWallColor(selectedWall);
+    //     }
+
+    //     selectedTower = tower; // Set the new selected tower
         
 
-        // Ensure infoUI is not null before calling the method
-        if (infoUI == null) {
-            Debug.LogError("InfoUI is not assigned!");
-            return;
-        }
+    //     // Ensure infoUI is not null before calling the method
+    //     if (infoUI == null) {
+    //         Debug.LogError("InfoUI is not assigned!");
+    //         return;
+    //     }
 
-        infoUI.ShowTowerPanel();
-        infoUI.UpdateTowerInfo(selectedTower.GetTowerData());
+    //     infoUI.ShowTowerPanel();
+    //     infoUI.UpdateTowerInfo(selectedTower.GetTowerData());
 
-        // Change the color of the selected tower to a moderate light greenish tint
-        Renderer towerRenderer = selectedTower.GetComponent<Renderer>();
-        if (towerRenderer != null) {
-            towerRenderer.material.color = new Color(0.6f, 1f, 0.6f, 1f); // Moderate light green filter
-        } else {
-            Debug.LogError("Renderer not found on the selected tower!");
-        }
-    }
+    //     // Change the color of the selected tower to a moderate light greenish tint
+    //     Renderer towerRenderer = selectedTower.GetComponent<Renderer>();
+    //     if (towerRenderer != null) {
+    //         towerRenderer.material.color = new Color(0.6f, 1f, 0.6f, 1f); // Moderate light green filter
+    //     } else {
+    //         Debug.LogError("Renderer not found on the selected tower!");
+    //     }
+    // }
 
-    void ResetTowerColor(BaseTower tower) {
-        if (tower != null) {
-            Renderer towerRenderer = tower.GetComponent<Renderer>();
-            if (towerRenderer != null) {
-                towerRenderer.material.color = tower.originalColor; // Restore the original color
-            }
-        }
-    }
-    private void SellTower() {
-        player.EarnGold(selectedTower.GetTowerData().price);
-        Destroy(selectedTower.gameObject);
-        selectedTower = null;
-        infoUI.ShowEmptyPanel();
-    }
-    private void SellWall() {
-        Debug.Log("sell press");
-        // Logic to sell the tower
-        player.EarnIceBlock(1); // Give gold back to player
-        selectedWall.node.walkable = true;
-        selectedWall.node.isBuildable = true;
-        Destroy(selectedWall.gameObject); // Destroy the tower
-        selectedWall = null; // Clear the selected tower
-        infoUI.ShowEmptyPanel();
-    }
+    // void ResetTowerColor(BaseTower tower) {
+    //     if (tower != null) {
+    //         Renderer towerRenderer = tower.GetComponent<Renderer>();
+    //         if (towerRenderer != null) {
+    //             towerRenderer.material.color = tower.originalColor; // Restore the original color
+    //         }
+    //     }
+    // }
 
     BaseTower GetTowerUnderMouse() {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -389,7 +433,7 @@ public class WallPlacement : MonoBehaviour {
                 player.SpendGold(towerCost);
 
                 // Select the tower
-                SelectTower(baseTower);
+                baseTower.Select();
             } else {
                 Debug.LogWarning("Not enough gold to place the tower!");
                 Destroy(towerObject); // Destroy the tower if the player can't afford it
@@ -427,6 +471,8 @@ public class WallPlacement : MonoBehaviour {
                 if (wallComponent != null) {
                     wallComponent.node = node;  // Assign the node to the wall
                     node.wallObject = wallObject;  // Link the wall to the node
+
+                    // wallComponent.wallPlacement = this; <-- mayby
                 } else {
                     Debug.LogError("Wall component missing on instantiated wall!");
                 }
